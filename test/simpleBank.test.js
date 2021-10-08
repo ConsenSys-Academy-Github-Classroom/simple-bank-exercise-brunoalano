@@ -15,6 +15,8 @@ contract("SimpleBank", function (accounts) {
   const [contractOwner, alice] = accounts;
   const deposit = web3.utils.toBN(2);
 
+  // Before each test, we deploy a new Contract
+  // as a clean state to test
   beforeEach(async () => {
     instance = await SimpleBank.new();
   });
@@ -26,12 +28,6 @@ contract("SimpleBank", function (accounts) {
 
   it("is owned by owner", async () => {
     assert.equal(
-      // Hint:
-      //   the error `TypeError: Cannot read property 'call' of undefined`
-      //   will be fixed by setting the correct visibility specifier. See
-      //   the following two links
-      //   1: https://docs.soliditylang.org/en/v0.8.5/cheatsheet.html?highlight=visibility#function-visibility-specifiers
-      //   2: https://docs.soliditylang.org/en/v0.8.5/contracts.html#getter-functions
       await instance.owner.call(),
       contractOwner,
       "owner is not correct",
@@ -39,6 +35,7 @@ contract("SimpleBank", function (accounts) {
   });
 
   it("should mark addresses as enrolled", async () => {
+    // Sending a tx from `alice`
     await instance.enroll({ from: alice });
 
     const aliceEnrolled = await instance.enrolled(alice, { from: alice });
